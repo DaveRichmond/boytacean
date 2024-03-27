@@ -44,6 +44,11 @@ fn main() {
         return;
     }
 
+    // if we don't have the buildinfo feature enabled, then just get outta here
+    if  ! cfg!(feature="buildinfo") {
+        return;
+    }
+ 
     // opens the target destination file panicking with a proper message in
     // case it was not possible to open it (eg: directory inexistent)
     let dest_path = Path::new(GEN_DIR).join(Path::new(BUILD_OUT_FILE));

@@ -44,8 +44,9 @@ fn main() {
         return;
     }
 
-    // if we don't have the buildinfo feature enabled, then just get outta here
-    if  ! cfg!(feature="buildinfo") {
+    // if we have the gen-mock feature enabled, then just get outta here (embuild doesn't like some
+    // of the stuff here)
+    if  cfg!(feature="gen-mock") {
         return;
     }
  

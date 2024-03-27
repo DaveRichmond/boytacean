@@ -21,7 +21,6 @@ debug = []
 pedantic = []
 cpulog = []
 gen-mock = []
-no-buildinfo = []
 
 [dependencies]
 wasm-bindgen = { version = "0.2", optional = true }

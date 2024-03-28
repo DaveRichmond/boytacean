@@ -1,6 +1,28 @@
 //! PPU (Picture Processing Unit) functions and structures.
 
 use core::fmt;
+#[cfg(feature = "embedded")]
+use core::{
+    borrow::BorrowMut,
+    cmp::max,
+    convert::TryInto,
+    fmt::{ Display, Formatter },
+    primitive::u16,
+};
+#[cfg(feature = "embedded")]
+use alloc::{ 
+    format,
+    boxed::Box, 
+    string::String, 
+    sync::{ Arc },
+    vec::Vec 
+};
+#[cfg(feature = "embedded")]
+use embassy_sync::blocking_mutex::NoopMutex;
+#[cfg(feature = "embedded")]
+pub type Mutex<T> = NoopMutex<T>;
+
+#[cfg(not(feature = "embedded"))]
 use std::{
     borrow::BorrowMut,
     cmp::max,
@@ -644,7 +666,7 @@ impl Ppu {
             palette_address_obj: 0x0,
             first_frame: false,
             frame_index: 0,
-            frame_buffer_index: std::u16::MAX,
+            frame_buffer_index: u16::MAX,
             stat_hblank: false,
             stat_vblank: false,
             stat_oam: false,
@@ -699,7 +721,7 @@ impl Ppu {
         self.palette_address_obj = 0x0;
         self.first_frame = false;
         self.frame_index = 0;
-        self.frame_buffer_index = std::u16::MAX;
+        self.frame_buffer_index = u16::MAX;
         self.stat_hblank = false;
         self.stat_vblank = false;
         self.stat_oam = false;
@@ -1281,7 +1303,7 @@ impl Ppu {
         let color = &self.palette_colors[shade_index as usize];
         self.color_buffer.fill(0);
         self.shade_buffer.fill(shade_index);
-        self.frame_buffer_index = std::u16::MAX;
+        self.frame_buffer_index = u16::MAX;
         for pixel in self.frame_buffer.chunks_mut(RGB_SIZE) {
             pixel[0] = color[0];
             pixel[1] = color[1];
@@ -1298,6 +1320,7 @@ impl Ppu {
     /// Prints the tile data information to the stdout, this is
     /// useful for debugging purposes.
     pub fn print_tile_stdout(&self, tile_index: usize) {
+        #[cfg(not(feature = "embedded"))]
         println!("{}", self.tiles[tile_index]);
     }
 

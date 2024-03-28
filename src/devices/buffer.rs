@@ -1,5 +1,11 @@
 use crate::serial::SerialDevice;
 
+#[cfg(feature = "embedded")]
+use core::fmt::{ self, Display, Formatter };
+#[cfg(feature = "embedded")]
+use alloc::{ string::String, vec::Vec, vec };
+
+#[cfg(not(feature = "embedded"))]
 use std::fmt::{self, Display, Formatter};
 
 pub struct BufferDevice {

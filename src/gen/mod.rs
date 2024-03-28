@@ -1,6 +1,6 @@
 //! Constants that define the current build and execution environment.
 
-use std::collections::HashMap;
+use hashbrown::hash_map::HashMap;
 
 #[cfg(feature = "gen-mock")]
 pub mod mock;

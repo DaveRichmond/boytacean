@@ -1,9 +1,22 @@
 use core::fmt;
+#[cfg(not(feature = "embedded"))]
 use std::{
     cmp::max,
     fmt::{Display, Formatter},
     vec,
 };
+
+#[cfg(feature = "embedded")]
+use alloc::{ string::String, vec::Vec, vec, format };
+#[cfg(feature = "embedded")]
+use core::{
+    primitive::str,
+    cmp::max,
+    fmt::{ Formatter, Display}
+};
+
+#[cfg(not(feature = "embedded"))]
+use std::str;
 
 use crate::{
     cheats::{genie::GameGenie, shark::GameShark},
@@ -11,9 +24,10 @@ use crate::{
     error::Error,
     gb::GameBoyMode,
     mmu::BusComponent,
-    util::read_file,
     warnln,
 };
+#[cfg(not(feature = "embedded"))]
+use crate::util::read_file;
 
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
@@ -366,6 +380,7 @@ impl Cartridge {
         Ok(cartridge)
     }
 
+    #[cfg(not(feature = "embedded"))]
     pub fn from_file(path: &str) -> Result<Self, Error> {
         let data = read_file(path).unwrap();
         Self::from_data(&data)
@@ -618,9 +633,16 @@ impl Cartridge {
 
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 impl Cartridge {
+    #[cfg(feature = "embedded")]
+    pub fn title(&self) -> String {
+        use alloc::string::ToString;
+
+        "Not implemented".to_string()
+    }
+    #[cfg(not(feature = "embedded"))]
     pub fn title(&self) -> String {
         String::from(
-            std::str::from_utf8(&self.rom_data[0x0134..self.title_offset])
+            str::from_utf8(&self.rom_data[0x0134..self.title_offset])
                 .unwrap()
                 .trim(),
         )

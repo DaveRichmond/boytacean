@@ -1,5 +1,20 @@
+#[cfg(feature = "embedded")]
+use core::{
+    fmt::{ self, Display, Formatter }
+};
+#[cfg(feature = "embedded")]
+use alloc::{ 
+    format,
+    
+    string::{ String, ToString },
+    vec,
+    vec::Vec 
+};
+
+use hashbrown::hash_map::HashMap;
+
+#[cfg(not(feature = "embedded"))]
 use std::{
-    collections::HashMap,
     fmt::{self, Display, Formatter},
 };
 

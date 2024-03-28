@@ -1,3 +1,8 @@
+#[cfg(feature = "embedded")]
+use core::fmt::{ self, Display, Formatter };
+#[cfg(feature = "embedded")]
+use alloc::{ string::{ String, ToString }, vec::Vec, format };
+#[cfg(not(feature = "embedded"))]
 use std::fmt::{self, Display, Formatter};
 
 use crate::{ppu::PaletteAlpha, serial::SerialDevice, warnln};

@@ -1,3 +1,15 @@
+#[cfg(feature = "embedded")]
+use core::{
+    fmt::{ self, Display, Formatter },
+};
+#[cfg(feature = "embedded")]
+use alloc::{
+    string::String,
+    vec,
+    vec::Vec,
+};
+
+#[cfg(not(feature = "embedded"))]
 use std::{
     fmt::{self, Display, Formatter},
     io::{stdout, Write},
@@ -29,8 +41,10 @@ impl SerialDevice for StdoutDevice {
     }
 
     fn receive(&mut self, byte: u8) {
+        #[cfg(not(feature = "embedded"))]
         print!("{}", byte as char);
         if self.flush {
+            #[cfg(not(feature = "embedded"))]
             stdout().flush().unwrap();
         }
         let data = vec![byte];

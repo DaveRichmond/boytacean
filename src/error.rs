@@ -1,3 +1,9 @@
+#[cfg(feature = "embedded")]
+use core::fmt::{ self, Display, Formatter};
+#[cfg(feature = "embedded")]
+use alloc::string::String;
+
+#[cfg(not(feature = "embedded"))]
 use std::fmt::{self, Display, Formatter};
 
 /// Top level enum for error handling within Boytacean.

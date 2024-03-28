@@ -1,3 +1,7 @@
+#[cfg(feature = "embedded")]
+use alloc::collections::VecDeque;
+
+#[cfg(not(feature = "embedded"))]
 use std::collections::VecDeque;
 
 use crate::{gb::GameBoy, mmu::BusComponent, warnln};

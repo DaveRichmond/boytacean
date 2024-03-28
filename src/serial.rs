@@ -1,3 +1,6 @@
+#[cfg(feature = "embedded")]
+use alloc::{ string::String, boxed::Box };
+
 use crate::{mmu::BusComponent, warnln};
 
 pub trait SerialDevice {

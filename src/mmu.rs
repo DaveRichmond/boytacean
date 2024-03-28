@@ -1,5 +1,13 @@
 //! MMU (Memory Management Unit) functions and structures.
 
+#[cfg(feature = "embedded")]
+use alloc::{ vec, vec::Vec };
+#[cfg(feature = "embedded")]
+use embassy_sync::blocking_mutex::NoopMutex;
+#[cfg(feature = "embedded")]
+pub type Mutex<T> = NoopMutex<T>;
+
+#[cfg(not(feature = "embedded"))]
 use std::sync::Mutex;
 
 use crate::{

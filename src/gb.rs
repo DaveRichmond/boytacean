@@ -1,5 +1,25 @@
 //! Main GameBoy emulation entrypoint functions and structures.
 
+#[cfg(feature = "embedded")]
+use core::{
+    fmt::{ self, Display, Formatter },
+};
+#[cfg(feature = "embedded")]
+use alloc::{ 
+    string::{ String, ToString }, 
+    sync::Arc,
+    collections::VecDeque,
+    boxed::Box, 
+    vec::Vec,
+    format,
+    vec,
+};
+#[cfg(feature = "embedded")]
+use embassy_sync::blocking_mutex::NoopMutex;
+#[cfg(feature = "embedded")]
+pub type Mutex<T> = NoopMutex<T>;
+
+#[cfg(not(feature = "embedded"))]
 use std::{
     collections::VecDeque,
     fmt::{self, Display, Formatter},
@@ -27,8 +47,11 @@ use crate::{
     rom::{Cartridge, RamSize},
     serial::{NullDevice, Serial, SerialDevice},
     timer::Timer,
-    util::{read_file, SharedThread},
+    util::SharedThread,
 };
+
+#[cfg(not(feature = "embedded"))]
+use crate::util::read_file;
 
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
@@ -1077,12 +1100,14 @@ impl GameBoy {
         self.mmu_i().rom_i()
     }
 
+    #[cfg(not(feature = "embedded"))]
     pub fn load_boot_path(&mut self, path: &str) -> Result<(), Error> {
         let data = read_file(path)?;
         self.load_boot(&data);
         Ok(())
     }
 
+    #[cfg(not(feature = "embedded"))]
     pub fn load_boot_file(&mut self, boot_rom: BootRom) -> Result<(), Error> {
         match boot_rom {
             BootRom::Dmg => self.load_boot_path("./res/boot/dmg_boot.bin")?,
@@ -1095,16 +1120,19 @@ impl GameBoy {
         Ok(())
     }
 
+    #[cfg(not(feature = "embedded"))]
     pub fn load_boot_default_f(&mut self) -> Result<(), Error> {
         self.load_boot_dmg_f()?;
         Ok(())
     }
 
+    #[cfg(not(feature = "embedded"))]
     pub fn load_boot_dmg_f(&mut self) -> Result<(), Error> {
         self.load_boot_file(BootRom::DmgBootix)?;
         Ok(())
     }
 
+    #[cfg(not(feature = "embedded"))]
     pub fn load_boot_cgb_f(&mut self) -> Result<(), Error> {
         self.load_boot_file(BootRom::Cgb)?;
         Ok(())
@@ -1127,6 +1155,7 @@ impl GameBoy {
         self.load_cartridge(rom)
     }
 
+    #[cfg(not(feature = "embedded"))]
     pub fn load_rom_file(
         &mut self,
         path: &str,

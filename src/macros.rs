@@ -17,11 +17,14 @@ macro_rules! debugln {
     };
 }
 
+#[cfg(not(feature = "embedded"))]
 #[macro_export]
 macro_rules! infoln {
     ($($rest:tt)*) => {
         {
+            #[cfg(not(feature = "embedded"))]
             std::print!("[INFO] ");
+            #[cfg(not(feature = "embedded"))]
             std::println!($($rest)*);
         }
     }
@@ -42,7 +45,9 @@ macro_rules! warnln {
 macro_rules! warnln {
     ($($rest:tt)*) => {
         {
+            #[cfg(not(feature = "embedded"))]
             std::print!("[WARNING] ");
+            #[cfg(not(feature = "embedded"))]
             std::println!($($rest)*);
         }
     }

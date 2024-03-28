@@ -23,6 +23,9 @@ use crate::{
     util::{get_timestamp, save_bmp},
 };
 
+#[cfg(feature = "embedded")]
+use alloc::{ string::String, vec::Vec };
+
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 

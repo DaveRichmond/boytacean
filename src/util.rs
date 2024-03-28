@@ -1,3 +1,4 @@
+#[cfg(not(feature = "embedded"))]
 use std::{
     cell::RefCell,
     fs::File,
@@ -6,6 +7,20 @@ use std::{
     rc::Rc,
     sync::{Arc, Mutex},
 };
+
+#[cfg(feature = "embedded")]
+use core::cell::RefCell;
+
+#[cfg(feature="embedded")]
+use alloc::{ 
+    rc::Rc,
+    string::String, 
+    sync::Arc,
+    vec::Vec, 
+    format 
+};
+#[cfg(feature = "embedded")]
+use embassy_sync::blocking_mutex::NoopMutex;
 
 use crate::error::Error;
 
@@ -18,10 +33,16 @@ pub type SharedMut<T> = Rc<RefCell<T>>;
 
 /// Shared thread type able to be passed between threads.
 /// Significant performance overhead compared to `SharedMut`.
+#[cfg(feature = "embedded")]
+pub type Mutex<T> = NoopMutex<T>;
+// #[cfg(feature = "embedded")]
+// pub type SharedThread<T> = Arc<NoopMutex<T>>;
+// #[cfg(not(feature = "embedded"))]
 pub type SharedThread<T> = Arc<Mutex<T>>;
 
 /// Reads the contents of the file at the given path into
 /// a vector of bytes.
+#[cfg(not(feature = "embedded"))]
 pub fn read_file(path: &str) -> Result<Vec<u8>, Error> {
     let mut file = File::open(path)
         .map_err(|_| Error::CustomError(format!("Failed to open file: {}", path)))?;
@@ -31,6 +52,7 @@ pub fn read_file(path: &str) -> Result<Vec<u8>, Error> {
 }
 
 /// Writes the given data to the file at the given path.
+#[cfg(not(feature = "embedded"))]
 pub fn write_file(path: &str, data: &[u8]) -> Result<(), Error> {
     let mut file = File::create(path)
         .map_err(|_| Error::CustomError(format!("Failed to create file: {}", path)))?;
@@ -40,6 +62,7 @@ pub fn write_file(path: &str, data: &[u8]) -> Result<(), Error> {
 
 /// Replaces the extension in the given path with the provided extension.
 /// This function allows for simple associated file discovery.
+#[cfg(not(feature = "embedded"))]
 pub fn replace_ext(path: &str, new_extension: &str) -> Option<String> {
     let file_path = Path::new(path);
     let parent_dir = file_path.parent()?;
@@ -62,6 +85,7 @@ pub fn capitalize(string: &str) -> String {
     }
 }
 
+#[cfg(not(feature = "embedded"))]
 pub fn save_bmp(path: &str, pixels: &[u8], width: u32, height: u32) -> Result<(), Error> {
     let file = File::create(path)
         .map_err(|_| Error::CustomError(format!("Failed to create file: {}", path)))?;
@@ -109,6 +133,7 @@ pub fn save_bmp(path: &str, pixels: &[u8], width: u32, height: u32) -> Result<()
 }
 
 #[cfg(not(feature = "wasm"))]
+#[cfg(not(feature = "embedded"))]
 pub fn get_timestamp() -> u64 {
     use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -116,6 +141,7 @@ pub fn get_timestamp() -> u64 {
     now.duration_since(UNIX_EPOCH).unwrap().as_secs()
 }
 
+#[cfg(feature = "embedded")]
 #[cfg(feature = "wasm")]
 #[cfg_attr(feature = "wasm", wasm_bindgen)]
 pub fn get_timestamp() -> u64 {

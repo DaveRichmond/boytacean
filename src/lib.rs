@@ -1,4 +1,8 @@
+#![cfg_attr(feature = "embedded", no_std)]
 #![allow(clippy::uninlined_format_args)]
+
+#[cfg(feature = "embedded")]
+extern crate alloc;
 
 pub mod apu;
 pub mod cheats;
@@ -18,7 +22,9 @@ pub mod pad;
 pub mod ppu;
 pub mod rom;
 pub mod serial;
+#[cfg(not(feature = "embedded"))]
 pub mod state;
+#[cfg(not(feature = "embedded"))]
 pub mod test;
 pub mod timer;
 pub mod util;

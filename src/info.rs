@@ -5,6 +5,9 @@ use crate::{
     util::capitalize,
 };
 
+#[cfg(feature = "embedded")]
+use alloc::string::String;
+
 #[cfg(feature = "wasm")]
 use wasm_bindgen::prelude::*;
 

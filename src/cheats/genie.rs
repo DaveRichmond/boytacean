@@ -1,8 +1,16 @@
+#[cfg(feature = "embedded")]
+use core::{
+    fmt::{ self, Display, Formatter },
+};
+#[cfg(feature = "embedded")]
+use alloc::{ string::{String, ToString }, format };
+
+#[cfg(not(feature = "embedded"))]
 use std::{
-    collections::HashMap,
     fmt::{self, Display, Formatter},
 };
 
+use hashbrown::hash_map::HashMap;
 use crate::error::Error;
 
 #[cfg(feature = "wasm")]

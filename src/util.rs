@@ -20,7 +20,10 @@ use alloc::{
     format 
 };
 #[cfg(feature = "embedded")]
-use embassy_sync::blocking_mutex::NoopMutex;
+use embassy_sync::blocking_mutex::{
+    Mutex,
+    raw::NoopRawMutex
+};
 
 use crate::error::Error;
 
@@ -34,10 +37,8 @@ pub type SharedMut<T> = Rc<RefCell<T>>;
 /// Shared thread type able to be passed between threads.
 /// Significant performance overhead compared to `SharedMut`.
 #[cfg(feature = "embedded")]
-pub type Mutex<T> = NoopMutex<T>;
-// #[cfg(feature = "embedded")]
-// pub type SharedThread<T> = Arc<NoopMutex<T>>;
-// #[cfg(not(feature = "embedded"))]
+pub type SharedThread<T> = Arc<Mutex<NoopRawMutex, T>>;
+#[cfg(not(feature = "embedded"))]
 pub type SharedThread<T> = Arc<Mutex<T>>;
 
 /// Reads the contents of the file at the given path into

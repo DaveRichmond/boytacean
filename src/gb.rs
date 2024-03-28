@@ -3,6 +3,7 @@
 #[cfg(feature = "embedded")]
 use core::{
     fmt::{ self, Display, Formatter },
+    borrow::BorrowMut,
 };
 #[cfg(feature = "embedded")]
 use alloc::{ 
@@ -836,6 +837,8 @@ impl GameBoy {
 
     pub fn set_mode(&mut self, value: GameBoyMode) {
         self.mode = value;
+        // I can't for the life of me get embassy sync mutexes to cooperate. Pray for mojo when we're on esp32
+        #[cfg(not(feature = "embedded"))]
         (*self.gbc).lock().unwrap().set_mode(value);
         self.mmu().set_mode(value);
         self.ppu().set_gb_mode(value);
@@ -847,6 +850,7 @@ impl GameBoy {
 
     pub fn set_ppu_enabled(&mut self, value: bool) {
         self.ppu_enabled = value;
+        #[cfg(not(feature = "embedded"))]
         (*self.gbc).lock().unwrap().set_ppu_enabled(value);
     }
 
@@ -856,6 +860,7 @@ impl GameBoy {
 
     pub fn set_apu_enabled(&mut self, value: bool) {
         self.apu_enabled = value;
+        #[cfg(not(feature = "embedded"))]
         (*self.gbc).lock().unwrap().set_apu_enabled(value);
     }
 
@@ -865,6 +870,7 @@ impl GameBoy {
 
     pub fn set_dma_enabled(&mut self, value: bool) {
         self.dma_enabled = value;
+        #[cfg(not(feature = "embedded"))]
         (*self.gbc).lock().unwrap().set_dma_enabled(value);
     }
 
@@ -874,6 +880,7 @@ impl GameBoy {
 
     pub fn set_timer_enabled(&mut self, value: bool) {
         self.timer_enabled = value;
+        #[cfg(not(feature = "embedded"))]
         (*self.gbc).lock().unwrap().set_timer_enabled(value);
     }
 
@@ -883,6 +890,7 @@ impl GameBoy {
 
     pub fn set_serial_enabled(&mut self, value: bool) {
         self.serial_enabled = value;
+        #[cfg(not(feature = "embedded"))]
         (*self.gbc).lock().unwrap().set_serial_enabled(value);
     }
 
@@ -900,6 +908,7 @@ impl GameBoy {
 
     pub fn set_clock_freq(&mut self, value: u32) {
         self.clock_freq = value;
+        #[cfg(not(feature = "embedded"))]
         (*self.gbc).lock().unwrap().set_clock_freq(value);
         self.apu().set_clock_freq(value);
     }
